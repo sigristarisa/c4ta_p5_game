@@ -9,6 +9,7 @@ let options = [
 let wordObj = {};
 let boxArray = [];
 let points = 0;
+const margin = 100;
 
 const createWordObj = () => {
   const name = options[Math.floor(Math.random() * options.length)].name;
@@ -21,7 +22,6 @@ const createWordObj = () => {
 };
 
 const createBoxArray = () => {
-  const margin = 100;
   let boxWidth = (windowWidth - margin * 2) / options.length;
   let boxX = margin;
   const boxY = 200;
@@ -41,6 +41,14 @@ const rerenderWord = () => {
   x = windowWidth / 2;
   y = windowHeight / 2;
   text(wordObj.name, x, y);
+};
+
+const shuffleBoxArray = (array) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 };
 
 function setup() {
@@ -73,11 +81,16 @@ function mouseDragged() {
 }
 
 function mouseReleased() {
-  console.log("released!!");
   const droppedBox = boxArray.find(
     (box) =>
-      box.boxX <= x && box.boxX + (windowWidth - 100 * 2) / options.length >= x
+      box.boxX <= x &&
+      box.boxX + (windowWidth - margin * 2) / options.length >= x
   );
-  if (droppedBox.name === wordObj.name) points += 1;
+  if (droppedBox.name === wordObj.name) {
+    points += 1;
+  }
   rerenderWord();
+  let tempArray = shuffleBoxArray(boxArray);
+  boxArray = tempArray;
+  console.log("is it shuffled?", boxArray);
 }
